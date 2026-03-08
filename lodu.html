@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lodu Code | The Desi Programming Language</title>
+    <!-- Google Fonts for Modern UI and Code -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS VARIABLES FOR MODERN DARK THEME */
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #f43f5e; /* Aggressive Red/Pink */
+            --accent-hover: #e11d48;
+            --font-main: 'Poppins', sans-serif;
+            --font-code: 'Fira Code', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            line-height: 1.6;
+        }
+
+        /* NAVBAR */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #334155;
+        }
+
+        nav .logo { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+        nav a { color: var(--text-main); text-decoration: none; margin-left: 20px; font-weight: 500; transition: 0.3s; }
+        nav a:hover { color: var(--accent); }
+        .btn-outline { border: 1px solid var(--accent); padding: 8px 16px; border-radius: 5px; }
+
+        @media (max-width: 768px) {
+            nav { padding: 15px 20px; flex-direction: column; gap: 10px; }
+            nav a { margin-left: 10px; margin-right: 10px; }
+        }
+
+        /* HERO SECTION */
+        header {
+            text-align: center; padding: 100px 20px;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+        }
+        h1 { font-size: 3.5rem; margin-bottom: 20px; }
+        @media (max-width: 768px) { h1 { font-size: 2.2rem; } }
+        .highlight { color: var(--accent); text-shadow: 0 0 15px rgba(244, 63, 94, 0.5); }
+        header p { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 30px; }
+
+        .btn-primary, .btn-secondary, .btn-run {
+            padding: 12px 25px; border-radius: 5px; font-weight: 600; cursor: pointer; border: none; font-size: 1rem; text-decoration: none; display: inline-block;
+        }
+        .btn-primary, .btn-run { background: var(--accent); color: white; transition: 0.3s; box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4); }
+        .btn-primary:hover, .btn-run:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        .btn-secondary { background: var(--bg-card); color: white; border: 1px solid #334155; margin-left: 10px; }
+        
+        @media (max-width: 768px) {
+            .btn-secondary { margin-left: 0; margin-top: 10px; }
+        }
+
+        .terminal-box {
+            background: black; color: #4ade80; font-family: var(--font-code);
+            display: inline-block; padding: 15px 30px; border-radius: 8px; margin-top: 40px;
+            border: 1px solid #334155;
+            word-break: break-all;
+        }
+
+        /* DOCS & PLAYGROUND SECTIONS */
+        section { padding: 80px 10%; }
+        @media (max-width: 768px) { section { padding: 50px 5%; } }
+        h2 { font-size: 2.5rem; margin-bottom: 40px; text-align: center; }
+
+        .docs-container { background: var(--bg-card); border-radius: 10px; overflow: hidden; border: 1px solid #334155; }
+        .tabs { display: flex; background: #0f172a; border-bottom: 1px solid #334155; flex-wrap: wrap; }
+        .tab-btn { flex: 1; min-width: 120px; padding: 12px; background: none; border: none; color: var(--text-muted); font-size: 0.95rem; cursor: pointer; transition: 0.3s; font-family: var(--font-main); border-right: 1px solid #1e293b; }
+        .tab-btn:hover { background: rgba(255,255,255,0.05); color: white; }
+        .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); background: rgba(244, 63, 94, 0.1); font-weight: 600; }
+        .tab-content { padding: 30px; }
+
+        pre { background: #0f172a; padding: 20px; border-radius: 8px; overflow-x: auto; margin-top: 15px; border: 1px solid #334155; }
+        code { font-family: var(--font-code); font-size: 0.95rem; color: #e2e8f0; }
+        .doc-pane h3 { color: var(--accent); margin-top: 20px; margin-bottom: 10px; }
+        .doc-pane p { color: var(--text-muted); margin-bottom: 15px; }
+        .doc-pane ul { list-style-type: square; margin-left: 20px; color: var(--text-muted); margin-bottom: 15px; }
+        .doc-pane li { margin-bottom: 8px; }
+        .code-inline { background: #334155; padding: 2px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.85rem; color: #f8fafc; }
+
+        /* EDITOR UI */
+        .editor-container { display: flex; gap: 20px; height: 500px; margin-top: 30px; }
+        @media(max-width: 768px){ .editor-container { flex-direction: column; height: auto; } }
+        .editor-pane, .console-pane { flex: 1; display: flex; flex-direction: column; background: var(--bg-card); border-radius: 10px; border: 1px solid #334155; overflow: hidden; min-height: 300px; }
+
+        textarea {
+            flex: 1; background: #0f172a; color: #60a5fa; font-family: var(--font-code); font-size: 1.05rem;
+            padding: 20px; border: none; resize: none; outline: none; line-height: 1.6;
+        }
+        .btn-run { border-radius: 0; padding: 15px; font-size: 1.1rem; width: 100%; }
+
+        .console-header { background: #334155; padding: 10px 20px; font-weight: bold; font-family: var(--font-code); font-size: 0.9rem;}
+        .output { padding: 20px; font-family: var(--font-code); color: #cbd5e1; flex: 1; overflow-y: auto; white-space: pre-wrap; background: black; line-height: 1.5;}
+        .err-text { color: #f87171; font-weight: bold; }
+        .succ-text { color: #4ade80; font-weight: bold; }
+
+        footer { text-align: center; padding: 30px; background: #0f172a; border-top: 1px solid #334155; margin-top: 50px; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="logo">🦊 Lodu Code</div>
+        <div class="links">
+            <a href="#docs">Docs</a>
+            <a href="#playground">Playground</a>
+            <a href="https://github.com/aroyalprince/Lodu-Code" target="_blank" class="btn-outline">GitHub</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header>
+        <div class="hero-content">
+            <h1>The Most <span class="highlight">Aggressive</span> Desi Programming Language</h1>
+            <p>Tired of Python being polite? Lodu Code enforces "Strict Sanskar" and roasts you if you write bad logic. Built for true Indian Techies.</p>
+            <div class="hero-buttons">
+                <a href="#playground" class="btn-primary">Try in Browser</a>
+                <a href="#docs" class="btn-secondary">Read the Docs</a>
+            </div>
+            <div class="terminal-box">
+                <code>pip install --upgrade lodu-code</code>
+            </div>
+        </div>
+    </header>
+
+    <!-- DOCS SECTION -->
+    <section id="docs">
+        <h2>📚 Official Documentation</h2>
+        <div class="docs-container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('install')">1. Setup & Install</button>
+                <button class="tab-btn" onclick="showTab('rules')">2. Rules (Sanskar)</button>
+                <button class="tab-btn" onclick="showTab('variables')">3. Variables & I/O</button>
+                <button class="tab-btn" onclick="showTab('conditions')">4. If-Else</button>
+                <button class="tab-btn" onclick="showTab('loops')">5. Loops</button>
+                <button class="tab-btn" onclick="showTab('functions')">6. Functions & Tools</button>
+            </div>
+            
+            <div class="tab-content">
+
+                <!-- 1. Setup & Install (NEW TAB) -->
+                <div id="install" class="doc-pane active">
+                    <h3>🛠️ Step 1: Install the Engine</h3>
+                    <p>Lodu Code runs on a custom Python-based interpreter. Install it globally using pip in your terminal:</p>
+                    <pre><code>pip install lodu-code</code></pre>
+
+                    <h3>🦊 Step 2: VS Code Extension</h3>
+                    <p>Get the ultimate coding experience with syntax highlighting and the official file icon.</p>
+                    <ul>
+                        <li>Open Visual Studio Code.</li>
+                        <li>Go to the Extensions Marketplace (Ctrl+Shift+X).</li>
+                        <li>Search for <strong>"Lodu Code Support"</strong> and install it.</li>
+                        <li>Now create any file with the <span class="code-inline">.lodu</span> extension!</li>
+                    </ul>
+
+                    <h3>🚀 Step 3: Run Your First Code</h3>
+                    <p>Write your Lodu code in a file (e.g., <span class="code-inline">hello.lodu</span>) and run it in the terminal:</p>
+                    <pre><code>lodu hello.lodu</code></pre>
+                    <p><em>Pro Tip: If Windows throws a PATH error saying 'lodu is not recognized', run it like this:</em></p>
+                    <pre><code>python -m lodu_runner hello.lodu</code></pre>
+                </div>
+
+                <!-- 2. Rules -->
+                <div id="rules" class="doc-pane" style="display: none;">
+                    <h3>The Rules of Sanskar (Structure)</h3>
+                    <p>Lodu Code is extremely strict about manners. If you forget to greet or end properly, the compiler will roast you. The engine is case-insensitive, so <span class="code-inline">NaMaSte</span> works just fine.</p>
+                    <ul>
+                        <li><span class="code-inline">Namaste</span> : Must be the first line to show respect.</li>
+                        <li><span class="code-inline">ab sun { ... }</span> : Your main logic MUST go inside this block. Anything outside is ignored or throws an error.</li>
+                        <li><span class="code-inline">Khatm, tata, goodbye</span> : Must be the last line to exit gracefully.</li>
+                        <li><span class="code-inline">@@</span> : Use this for writing comments. The engine ignores these lines.</li>
+                    </ul>
+                    <pre><code>@@ Ye mera pehla program hai
+Namaste
+
+ab sun {
+    @@ Asli logic yahan likho!
+    chl ab print kar("Jalwa hai bhai ka!")
+}
+
+Khatm, tata, goodbye</code></pre>
+                </div>
+
+                <!-- 3. Variables & IO -->
+                <div id="variables" class="doc-pane" style="display: none;">
+                    <h3>Variables & User Input</h3>
+                    <p>Memory management is straightforward. Declare variables using the <span class="code-inline">bkl</span> keyword. You can cast types using <span class="code-inline">int()</span>, <span class="code-inline">str()</span>, <span class="code-inline">float()</span>, or <span class="code-inline">boolean()</span>.</p>
+                    <pre><code>Namaste
+
+ab sun {
+    @@ Taking input from the terminal
+    bkl age = int(bsdk input daal("Apni age bata: "))
+    
+    @@ Math operations work normally
+    bkl target = age + 10
+    
+    @@ Printing (You can use 'chl' or 'mkc' prefix)
+    chl ab print kar("10 saal baad tu", target, "saal ka hoga!")
+}
+
+Khatm, tata, goodbye</code></pre>
+                </div>
+
+                <!-- 4. If Else -->
+                <div id="conditions" class="doc-pane" style="display: none;">
+                    <h3>Conditions (Agar - Varna)</h3>
+                    <p>Make decisions using <span class="code-inline">agar (condition) {</span> and <span class="code-inline">} varna {</span>. Be careful, the <span class="code-inline">} varna {</span> must be exactly on the same line!</p>
+                    <pre><code>Namaste
+
+ab sun {
+    bkl marks = 95
+    
+    agar (marks >= 90) {
+        chl ab print kar("Bhai tu toh Topper nikla!")
+    } varna {
+        chl ab print kar("Chup chap padhai kar le bkl")
+    }
+}
+
+Khatm, tata, goodbye</code></pre>
+                </div>
+
+                <!-- 5. Loops -->
+                <div id="loops" class="doc-pane" style="display: none;">
+                    <h3>Loops (Jab Tak)</h3>
+                    <p>Repeat tasks using the <span class="code-inline">jab tak</span> loop. It works exactly like a 'while' loop in other languages.</p>
+                    <pre><code>Namaste
+
+ab sun {
+    bkl count = 1
+    
+    jab tak (count <= 3) {
+        chl ab print kar("Ginti: ", count)
+        @@ Increment variable
+        bkl count = count + 1
+    }
+}
+
+Khatm, tata, goodbye</code></pre>
+                </div>
+
+                <!-- 6. Functions & Tools -->
+                <div id="functions" class="doc-pane" style="display: none;">
+                    <h3>Custom Functions & Built-in Tools</h3>
+                    <p>Define custom functions using <span class="code-inline">abe saale</span> and return values using <span class="code-inline">wapas aa</span>.</p>
+                    <pre><code>Namaste
+
+ab sun {
+    abe saale jod_de(x, y) {
+        bkl ans = x + y
+        wapas aa ans
+    }
+
+    bkl result = jod_de(50, 50)
+    chl ab print kar("Ans hai:", result)
+}
+
+Khatm, tata, goodbye</code></pre>
+                    <h3>Built-in Desi Globals</h3>
+                    <ul>
+                        <li><span class="code-inline">raand(max)</span>: Generates random integers.</li>
+                        <li><span class="code-inline">sabar kar(seconds)</span>: Pauses the execution (sleep).</li>
+                        <li><span class="code-inline">naap(item)</span>: Returns the length of a string or array.</li>
+                        <li><span class="code-inline">Array([1, 2, 3])</span>: Creates a list.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CODE SPACE (PLAYGROUND) -->
+    <section id="playground">
+        <h2>💻 Live Playground Engine</h2>
+        <p>Test your Lodu Code right here in the browser. Don't forget your Sanskar!</p>
+        <div class="editor-container">
+            <div class="editor-pane">
+                <textarea id="code-editor" spellcheck="false">
+@@ Write your Lodu Code here!
+Namaste
+
+ab sun {
+    @@ Taking input from the terminal popup
+    bkl age = int(bsdk input daal("Apni age bata: "))
+    
+    @@ Math operations
+    bkl target = age + 10
+    
+    @@ Printing
+    chl ab print kar("10 saal baad tu", target, "saal ka hoga!")
+}
+
+Khatm, tata, goodbye</textarea>
+                <button class="btn-run" onclick="runLoduCode()">▶ RUN CODE</button>
+            </div>
+            <div class="console-pane">
+                <div class="console-header">Terminal Output</div>
+                <div id="output-console" class="output">Waiting for execution...</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Invented with 😡 and ❤️ by <strong>Prince Kumar Pandit</strong> | <a href="https://pypi.org/project/lodu-code/" target="_blank" style="color: var(--accent);">View on PyPI</a></p>
+    </footer>
+
+    <!-- JAVASCRIPT ENGINE (EMBEDDED BROWSER MOCK) -->
+    <script>
+        // Define Globals so browser eval handles Python casts smoothly
+        window.int = (val) => parseInt(val) || 0;
+        window.str = (val) => String(val);
+        window.float = (val) => parseFloat(val) || 0;
+        window.boolean = (val) => Boolean(val);
+
+        // Docs Tab Switcher Logic
+        function showTab(tabId) {
+            document.querySelectorAll('.doc-pane').forEach(pane => pane.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        // Advanced Web-based Interpreter for Lodu Code
+        function runLoduCode() {
+            const codeText = document.getElementById('code-editor').value;
+            const lines = codeText.split('\n');
+            const output = document.getElementById('output-console');
+            
+            output.innerHTML = "--- Lodu Code run ho raha hai... jalwa hai bhai ka! ---\n\n";
+
+            // 1. Strict Sanskar Checks (Case Insensitive EXACT matches just like Python)
+            let hasNamaste = false;
+            let hasMain = false;
+            let hasKhatm = false;
+
+            for(let l of lines) {
+                let cl = l.split("@@")[0].trim().toLowerCase();
+                if(cl === "namaste") hasNamaste = true;
+                if(cl.startsWith("ab sun") && cl.includes("{")) hasMain = true;
+                if(cl === "khatm, tata, goodbye") hasKhatm = true;
+            }
+
+            if (!hasNamaste) { output.innerHTML += '<span class="err-text">Error: Abe lawde! Sanskar bhool gaya? Pehle \'Namaste\' likh!</span>\n'; return; }
+            if (!hasMain) { output.innerHTML += '<span class="err-text">Error: Abe bkl! Main logic kahan daalega? \'ab sun {\' lagana zaroori hai!</span>\n'; return; }
+            if (!hasKhatm) { output.innerHTML += '<span class="err-text">Error: Abe bhadwe programme toh khatam kar! Last mein \'Khatm, tata, goodbye\' likh!</span>\n'; return; }
+
+            // 2. Pre-Processing (Building Jumps just like Python Engine)
+            let jumps = {};
+            let stack = [];
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim().toLowerCase();
+                if (line.includes("@@")) {
+                    line = line.split("@@")[0].trim();
+                }
+                
+                // FIX FOR INFINITE LOOP: Prioritize "} varna {" check before ".endsWith('{')" 
+                if (line.startsWith("} varna {")) {
+                    if (stack.length > 0) {
+                        let start = stack.pop();
+                        jumps[start] = i;
+                        stack.push(i);
+                    }
+                } else if (line.endsWith("{")) {
+                    stack.push(i);
+                } else if (line === "}" || line === "};") {
+                    if (stack.length > 0) {
+                        let start = stack.pop();
+                        jumps[start] = i;
+                        jumps[i] = start;
+                    }
+                }
+            }
+
+            // 3. Execution Engine
+            let variables = {};
+            let insideMain = false;
+            let i = 0;
+            let executionLimit = 2000; // Prevent browser freeze
+
+            while (i < lines.length && executionLimit > 0) {
+                executionLimit--;
+                let line = lines[i].trim();
+                
+                // Ignore empty lines and comments
+                if (line === "" || line.startsWith("@@")) { i++; continue; }
+
+                let lineLower = line.toLowerCase();
+
+                // Start/Stop Triggers
+                if (lineLower === "namaste") { i++; continue; }
+                if (lineLower.startsWith("ab sun") && lineLower.includes("{")) { insideMain = true; i++; continue; }
+                if (lineLower === "khatm, tata, goodbye") break;
+
+                // Execute Inside Main
+                if (insideMain) {
+                    
+                    // Loops (Jab Tak) Logic
+                    if (lineLower.startsWith("jab tak")) {
+                        let match = line.match(/jab tak\s*\((.*?)\)\s*\{/i);
+                        if (match) {
+                            let expr = match[1];
+                            let keys = Object.keys(variables).sort((a,b) => b.length - a.length);
+                            for (let key of keys) {
+                                let regex = new RegExp("\\b" + key + "\\b", "g");
+                                expr = expr.replace(regex, variables[key]);
+                            }
+                            try {
+                                if (eval(expr)) { i++; } else { i = jumps[i] + 1; }
+                            } catch(e) { i = jumps[i] + 1; }
+                            continue;
+                        }
+                    }
+
+                    // If (Agar) Logic
+                    if (lineLower.startsWith("agar")) {
+                        let match = line.match(/agar\s*\((.*?)\)\s*\{/i);
+                        if (match) {
+                            let expr = match[1];
+                            let keys = Object.keys(variables).sort((a,b) => b.length - a.length);
+                            for (let key of keys) {
+                                let regex = new RegExp("\\b" + key + "\\b", "g");
+                                expr = expr.replace(regex, variables[key]);
+                            }
+                            try {
+                                if (eval(expr)) { i++; } else { i = jumps[i] + 1; }
+                            } catch(e) { i = jumps[i] + 1; }
+                            continue;
+                        }
+                    }
+
+                    // Else (Varna) logic -> Skip it if we got here normally
+                    if (lineLower.startsWith("} varna {")) {
+                        i = jumps[i] + 1;
+                        continue;
+                    }
+
+                    // Brackets } logic -> For looping back or ending block
+                    if (lineLower === "}" || lineLower === "};") {
+                        let startIdx = jumps[i];
+                        if (startIdx !== undefined) {
+                            let startLineLower = lines[startIdx].trim().toLowerCase();
+                            if (startLineLower.startsWith("jab tak")) {
+                                i = startIdx; // Jump back to loop condition
+                            } else {
+                                i++; // Normal block end
+                            }
+                        } else { i++; }
+                        continue;
+                    }
+
+                    // Variables (Declaration/Update): bkl count = count + 1
+                    if (lineLower.startsWith("bkl ") || (lineLower.includes("=") && !lineLower.startsWith("chl ") && !lineLower.startsWith("mkc ") && !lineLower.startsWith("agar ") && !lineLower.startsWith("jab tak "))) {
+                        let statement = lineLower.startsWith("bkl ") ? line.substring(4).trim() : line.trim();
+                        
+                        if (statement.includes("=")) {
+                            let splitIndex = statement.indexOf('=');
+                            let varName = statement.substring(0, splitIndex).trim();
+                            let varValueRaw = statement.substring(splitIndex + 1).trim();
+                            
+                            let expr = varValueRaw;
+
+                            // -- THE FIX: BROWSER INPUT LOGIC --
+                            let inputRegex = /bsdk input daal\s*\((.*?)\)/i;
+                            let inputMatch = expr.match(inputRegex);
+                            if (inputMatch) {
+                                // Extract prompt string
+                                let promptText = inputMatch[1].replace(/['"]/g, '');
+                                // Trigger actual browser prompt
+                                let userVal = prompt(promptText);
+                                // Make it safe for JS eval
+                                let safeVal = isNaN(userVal) ? `"${userVal}"` : (userVal || 0);
+                                // Inject into expression
+                                expr = expr.replace(inputRegex, safeVal);
+                            }
+
+                            let keys = Object.keys(variables).sort((a,b) => b.length - a.length);
+                            for (let key of keys) {
+                                let regex = new RegExp("\\b" + key + "\\b", "g");
+                                expr = expr.replace(regex, variables[key]);
+                            }
+
+                            try {
+                                variables[varName] = eval(expr);
+                            } catch (e) {
+                                variables[varName] = varValueRaw.replace(/['"]/g, '');
+                            }
+                            i++;
+                            continue;
+                        }
+                    }
+
+                    // Print (chl ab print kar)
+                    if (lineLower.startsWith("chl ab print kar") || lineLower.startsWith("mkc ab print kar")) {
+                        let match = line.match(/\((.*)\)/);
+                        if (match) {
+                            let content = match[1]; 
+                            let args = content.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                            
+                            // -- THE FIX: SPACES IN PRINT LOGIC --
+                            let finalOutputParts = [];
+
+                            args.forEach(arg => {
+                                arg = arg.trim();
+                                if ((arg.startsWith('"') && arg.endsWith('"')) || (arg.startsWith("'") && arg.endsWith("'"))) {
+                                    finalOutputParts.push(arg.substring(1, arg.length - 1));
+                                } else {
+                                    let expr = arg;
+                                    let keys = Object.keys(variables).sort((a,b) => b.length - a.length);
+                                    for (let key of keys) {
+                                        let regex = new RegExp("\\b" + key + "\\b", "g");
+                                        expr = expr.replace(regex, variables[key]);
+                                    }
+                                    try {
+                                        finalOutputParts.push(eval(expr));
+                                    } catch(e) {
+                                        finalOutputParts.push(arg); 
+                                    }
+                                }
+                            });
+                            
+                            // Join the parts with a space!
+                            output.innerHTML += `<span class="succ-text">> ${finalOutputParts.join(" ")}</span>\n`;
+                        }
+                        i++;
+                        continue;
+                    }
+                    
+                    // Unhandled line warning
+                    if(lineLower.startsWith("sabar kar") || lineLower.startsWith("abe saale")) {
+                        output.innerHTML += `<span style="color:#fbbf24">> Note: '${line.split('(')[0]}' is an advanced feature. Best tested in local Python environment!</span>\n`;
+                    }
+                    
+                    i++;
+                } else {
+                    i++;
+                }
+            }
+
+            if (executionLimit <= 0) {
+                output.innerHTML += '<span class="err-text">Warning: Infinite Loop Detected! Engine stopped automatically.</span>\n';
+            }
+
+            output.innerHTML += '\n<span style="color: #64748b; font-size: 0.85rem;">(Engine Note: The Browser Playground is a lightweight JS parser. For full functionality like delays and custom functions, pip install lodu-code!)</span>';
+        }
+    </script>
+</body>
+</html>
