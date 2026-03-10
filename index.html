@@ -187,11 +187,12 @@
                 <button class="tab-btn" onclick="showTab('conditions')">4. If-Else</button>
                 <button class="tab-btn" onclick="showTab('loops')">5. Loops</button>
                 <button class="tab-btn" onclick="showTab('functions')">6. Functions & Tools</button>
+                <button class="tab-btn" onclick="showTab('arrays')">7. Arrays (Jhund)</button>
             </div>
             
             <div class="tab-content">
 
-                <!-- 1. Setup & Install (NEW TAB) -->
+                <!-- 1. Setup & Install -->
                 <div id="install" class="doc-pane active">
                     <h3>🛠️ Step 1: Install the Engine</h3>
                     <p>Lodu Code runs on a custom Python-based interpreter. Install it globally using pip in your terminal:</p>
@@ -216,12 +217,12 @@
                 <!-- 2. Rules -->
                 <div id="rules" class="doc-pane" style="display: none;">
                     <h3>The Rules of Sanskar (Structure)</h3>
-                    <p>Lodu Code is extremely strict about manners. If you forget to greet or end properly, the compiler will roast you. The engine is case-insensitive, so <span class="code-inline">NaMaSte</span> works just fine.</p>
+                    <p>Lodu Code is extremely strict about manners. If you forget to greet or end properly, the compiler will roast you. The engine is case-insensitive.</p>
                     <ul>
                         <li><span class="code-inline">Namaste</span> : Must be the first line to show respect.</li>
-                        <li><span class="code-inline">ab sun { ... }</span> : Your main logic MUST go inside this block. Anything outside is ignored or throws an error.</li>
+                        <li><span class="code-inline">ab sun { ... }</span> : Your main logic MUST go inside this block.</li>
                         <li><span class="code-inline">Khatm, tata, goodbye</span> : Must be the last line to exit gracefully.</li>
-                        <li><span class="code-inline">@@</span> : Use this for writing comments. The engine ignores these lines.</li>
+                        <li><span class="code-inline">@@</span> : Use this for writing comments.</li>
                     </ul>
                     <pre><code>@@ Ye mera pehla program hai
 Namaste
@@ -237,7 +238,7 @@ Khatm, tata, goodbye</code></pre>
                 <!-- 3. Variables & IO -->
                 <div id="variables" class="doc-pane" style="display: none;">
                     <h3>Variables & User Input</h3>
-                    <p>Memory management is straightforward. Declare variables using the <span class="code-inline">bkl</span> keyword. You can cast types using <span class="code-inline">int()</span>, <span class="code-inline">str()</span>, <span class="code-inline">float()</span>, or <span class="code-inline">boolean()</span>.</p>
+                    <p>Declare variables using the <span class="code-inline">bkl</span> keyword. You can cast types using <span class="code-inline">int()</span>, <span class="code-inline">str()</span>, <span class="code-inline">float()</span>.</p>
                     <pre><code>Namaste
 
 ab sun {
@@ -247,7 +248,7 @@ ab sun {
     @@ Math operations work normally
     bkl target = age + 10
     
-    @@ Printing (You can use 'chl' or 'mkc' prefix)
+    @@ Printing
     chl ab print kar("10 saal baad tu", target, "saal ka hoga!")
 }
 
@@ -257,7 +258,7 @@ Khatm, tata, goodbye</code></pre>
                 <!-- 4. If Else -->
                 <div id="conditions" class="doc-pane" style="display: none;">
                     <h3>Conditions (Agar - Varna)</h3>
-                    <p>Make decisions using <span class="code-inline">agar (condition) {</span> and <span class="code-inline">} varna {</span>. Be careful, the <span class="code-inline">} varna {</span> must be exactly on the same line!</p>
+                    <p>Make decisions using <span class="code-inline">agar (condition) {</span> and <span class="code-inline">} varna {</span>.</p>
                     <pre><code>Namaste
 
 ab sun {
@@ -276,7 +277,7 @@ Khatm, tata, goodbye</code></pre>
                 <!-- 5. Loops -->
                 <div id="loops" class="doc-pane" style="display: none;">
                     <h3>Loops (Jab Tak)</h3>
-                    <p>Repeat tasks using the <span class="code-inline">jab tak</span> loop. It works exactly like a 'while' loop in other languages.</p>
+                    <p>Repeat tasks using the <span class="code-inline">jab tak</span> loop.</p>
                     <pre><code>Namaste
 
 ab sun {
@@ -284,7 +285,6 @@ ab sun {
     
     jab tak (count <= 3) {
         chl ab print kar("Ginti: ", count)
-        @@ Increment variable
         bkl count = count + 1
     }
 }
@@ -309,13 +309,41 @@ ab sun {
 }
 
 Khatm, tata, goodbye</code></pre>
-                    <h3>Built-in Desi Globals</h3>
+                </div>
+
+                <!-- 7. ARRAYS (NEW) -->
+                <div id="arrays" class="doc-pane" style="display: none;">
+                    <h3>Arrays (Jhund) & External Modules</h3>
+                    <p>In Lodu Code, Arrays are used as modules. You must import the array module first, and then you can push, pop, or check the length!</p>
                     <ul>
-                        <li><span class="code-inline">raand(max)</span>: Generates random integers.</li>
-                        <li><span class="code-inline">sabar kar(seconds)</span>: Pauses the execution (sleep).</li>
-                        <li><span class="code-inline">naap(item)</span>: Returns the length of a string or array.</li>
-                        <li><span class="code-inline">Array([1, 2, 3])</span>: Creates a list.</li>
+                        <li><span class="code-inline">bhadwe add kar Array as jhund</span>: Imports the Array module with an alias.</li>
+                        <li><span class="code-inline">alias.(1, 2)</span>: Creates a new array.</li>
+                        <li><span class="code-inline">daal(arr, val)</span>: Pushes/Appends a value.</li>
+                        <li><span class="code-inline">nikal(arr)</span>: Pops the last value.</li>
+                        <li><span class="code-inline">naap(arr)</span>: Returns the size of the array.</li>
                     </ul>
+                    <pre><code>bhadwe add kar Array as pp
+
+Namaste
+ab sun {
+    @@ Array Declare Karna
+    bkl marks = pp.(10, 20, 30)
+    chl ab print kar("Original Array:", marks)
+
+    @@ Value Daalna
+    daal(marks, 40)
+    chl ab print kar("40 daalne ke baad:", marks)
+
+    @@ Size Naapna
+    bkl size = naap(marks)
+    chl ab print kar("Array ka total size hai:", size)
+
+    @@ Index Update Karna
+    bkl marks[0] = 999
+    chl ab print kar("Index 0 update karne ke baad:", marks)
+}
+
+Khatm, tata, goodbye</code></pre>
                 </div>
 
             </div>
@@ -329,18 +357,19 @@ Khatm, tata, goodbye</code></pre>
         <div class="editor-container">
             <div class="editor-pane">
                 <textarea id="code-editor" spellcheck="false">
-@@ Write your Lodu Code here!
+bhadwe add kar Array as pp
+
 Namaste
 
 ab sun {
-    @@ Taking input from the terminal popup
-    bkl age = int(bsdk input daal("Apni age bata: "))
+    bkl marks = pp.(10, 20)
+    chl ab print kar("Mera Array:", marks)
     
-    @@ Math operations
-    bkl target = age + 10
+    daal(marks, 30)
+    chl ab print kar("Naya Array:", marks)
     
-    @@ Printing
-    chl ab print kar("10 saal baad tu", target, "saal ka hoga!")
+    bkl size = naap(marks)
+    chl ab print kar("Size hai:", size)
 }
 
 Khatm, tata, goodbye</textarea>
@@ -364,6 +393,7 @@ Khatm, tata, goodbye</textarea>
         window.str = (val) => String(val);
         window.float = (val) => parseFloat(val) || 0;
         window.boolean = (val) => Boolean(val);
+        window.naap = (val) => (val && val.length !== undefined) ? val.length : 0; // Length function for JS!
 
         // Docs Tab Switcher Logic
         function showTab(tabId) {
@@ -382,7 +412,7 @@ Khatm, tata, goodbye</textarea>
             
             output.innerHTML = "--- Lodu Code run ho raha hai... jalwa hai bhai ka! ---\n\n";
 
-            // 1. Strict Sanskar Checks (Case Insensitive EXACT matches just like Python)
+            // 1. Strict Sanskar Checks
             let hasNamaste = false;
             let hasMain = false;
             let hasKhatm = false;
@@ -407,7 +437,6 @@ Khatm, tata, goodbye</textarea>
                     line = line.split("@@")[0].trim();
                 }
                 
-                // FIX FOR INFINITE LOOP: Prioritize "} varna {" check before ".endsWith('{')" 
                 if (line.startsWith("} varna {")) {
                     if (stack.length > 0) {
                         let start = stack.pop();
@@ -427,9 +456,10 @@ Khatm, tata, goodbye</textarea>
 
             // 3. Execution Engine
             let variables = {};
+            let importedModules = {}; // Track imports
             let insideMain = false;
             let i = 0;
-            let executionLimit = 2000; // Prevent browser freeze
+            let executionLimit = 2000;
 
             while (i < lines.length && executionLimit > 0) {
                 executionLimit--;
@@ -440,6 +470,15 @@ Khatm, tata, goodbye</textarea>
 
                 let lineLower = line.toLowerCase();
 
+                // Import Module (Browser Support for Array)
+                if (lineLower.startsWith("bhadwe add kar")) {
+                    let match = line.match(/bhadwe add kar\s+(\w+)\s+as\s+(\w+)/i);
+                    if (match) {
+                        importedModules[match[2].toLowerCase()] = match[1];
+                    }
+                    i++; continue;
+                }
+
                 // Start/Stop Triggers
                 if (lineLower === "namaste") { i++; continue; }
                 if (lineLower.startsWith("ab sun") && lineLower.includes("{")) { insideMain = true; i++; continue; }
@@ -448,6 +487,22 @@ Khatm, tata, goodbye</textarea>
                 // Execute Inside Main
                 if (insideMain) {
                     
+                    // ARRAY PUSH/POP LOGIC IN BROWSER
+                    if (lineLower.startsWith("daal")) {
+                        let match = line.match(/daal\s*\(\s*([a-zA-Z_]\w*)\s*,\s*(.+)\s*\)/i);
+                        if (match && variables[match[1]] && Array.isArray(variables[match[1]])) {
+                            try { variables[match[1]].push(eval(match[2])); } catch(e){}
+                        }
+                        i++; continue;
+                    }
+                    if (lineLower.startsWith("nikal")) {
+                        let match = line.match(/nikal\s*\(\s*([a-zA-Z_]\w*)\s*\)/i);
+                        if (match && variables[match[1]] && Array.isArray(variables[match[1]])) {
+                            variables[match[1]].pop();
+                        }
+                        i++; continue;
+                    }
+
                     // Loops (Jab Tak) Logic
                     if (lineLower.startsWith("jab tak")) {
                         let match = line.match(/jab tak\s*\((.*?)\)\s*\{/i);
@@ -513,17 +568,21 @@ Khatm, tata, goodbye</textarea>
                             
                             let expr = varValueRaw;
 
-                            // -- THE FIX: BROWSER INPUT LOGIC --
+                            // -- TRANSFORM IMPORTED ARRAY SYNTAX pp.(1,2) -> [1,2] --
+                            for(let alias in importedModules) {
+                                if(importedModules[alias].toLowerCase() === "array") {
+                                    let regex = new RegExp("\\b" + alias + "\\.\\((.*?)\\)", "gi");
+                                    expr = expr.replace(regex, "[$1]");
+                                }
+                            }
+
+                            // -- BROWSER INPUT LOGIC --
                             let inputRegex = /bsdk input daal\s*\((.*?)\)/i;
                             let inputMatch = expr.match(inputRegex);
                             if (inputMatch) {
-                                // Extract prompt string
                                 let promptText = inputMatch[1].replace(/['"]/g, '');
-                                // Trigger actual browser prompt
                                 let userVal = prompt(promptText);
-                                // Make it safe for JS eval
                                 let safeVal = isNaN(userVal) ? `"${userVal}"` : (userVal || 0);
-                                // Inject into expression
                                 expr = expr.replace(inputRegex, safeVal);
                             }
 
@@ -534,7 +593,12 @@ Khatm, tata, goodbye</textarea>
                             }
 
                             try {
-                                variables[varName] = eval(expr);
+                                // Support array index assignment like arr[0] = 5
+                                if (varName.includes("[") && varName.endsWith("]")) {
+                                    eval(`variables["${varName.split('[')[0]}"][${varName.split('[')[1].replace(']','')}] = ${expr}`);
+                                } else {
+                                    variables[varName] = eval(expr);
+                                }
                             } catch (e) {
                                 variables[varName] = varValueRaw.replace(/['"]/g, '');
                             }
@@ -550,7 +614,6 @@ Khatm, tata, goodbye</textarea>
                             let content = match[1]; 
                             let args = content.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                             
-                            // -- THE FIX: SPACES IN PRINT LOGIC --
                             let finalOutputParts = [];
 
                             args.forEach(arg => {
@@ -565,14 +628,16 @@ Khatm, tata, goodbye</textarea>
                                         expr = expr.replace(regex, variables[key]);
                                     }
                                     try {
-                                        finalOutputParts.push(eval(expr));
+                                        let res = eval(expr);
+                                        // Format array nicely for printing
+                                        if (Array.isArray(res)) res = "[" + res.join(", ") + "]";
+                                        finalOutputParts.push(res);
                                     } catch(e) {
                                         finalOutputParts.push(arg); 
                                     }
                                 }
                             });
                             
-                            // Join the parts with a space!
                             output.innerHTML += `<span class="succ-text">> ${finalOutputParts.join(" ")}</span>\n`;
                         }
                         i++;
