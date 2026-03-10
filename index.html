@@ -35,7 +35,7 @@
           },
           "description": "Lodu Code is the most aggressive desi esoteric programming language, invented and developed by Prince Kumar Pandit."
         }
-</script>
+    </script>
     <style>
         /* CSS VARIABLES FOR MODERN DARK THEME */
         :root {
@@ -210,8 +210,6 @@
                     <h3>🚀 Step 3: Run Your First Code</h3>
                     <p>Write your Lodu code in a file (e.g., <span class="code-inline">hello.lodu</span>) and run it in the terminal:</p>
                     <pre><code>lodu hello.lodu</code></pre>
-                    <p><em>Pro Tip: If Windows throws a PATH error saying 'lodu is not recognized', run it like this:</em></p>
-                    <pre><code>python -m lodu_runner hello.lodu</code></pre>
                 </div>
 
                 <!-- 2. Rules -->
@@ -393,7 +391,7 @@ Khatm, tata, goodbye</textarea>
         window.str = (val) => String(val);
         window.float = (val) => parseFloat(val) || 0;
         window.boolean = (val) => Boolean(val);
-        window.naap = (val) => (val && val.length !== undefined) ? val.length : 0; // Length function for JS!
+        window.naap = (val) => (val && val.length !== undefined) ? val.length : 0;
 
         // Docs Tab Switcher Logic
         function showTab(tabId) {
@@ -412,7 +410,6 @@ Khatm, tata, goodbye</textarea>
             
             output.innerHTML = "--- Lodu Code run ho raha hai... jalwa hai bhai ka! ---\n\n";
 
-            // 1. Strict Sanskar Checks
             let hasNamaste = false;
             let hasMain = false;
             let hasKhatm = false;
@@ -421,21 +418,18 @@ Khatm, tata, goodbye</textarea>
                 let cl = l.split("@@")[0].trim().toLowerCase();
                 if(cl === "namaste") hasNamaste = true;
                 if(cl.startsWith("ab sun") && cl.includes("{")) hasMain = true;
-                if(cl === "khatm, tata, goodbye") hasKhatm = true;
+                if(cl === "khatm, tata, goodbye" || cl === "khtam , tata goodbye") hasKhatm = true;
             }
 
             if (!hasNamaste) { output.innerHTML += '<span class="err-text">Error: Abe lawde! Sanskar bhool gaya? Pehle \'Namaste\' likh!</span>\n'; return; }
             if (!hasMain) { output.innerHTML += '<span class="err-text">Error: Abe bkl! Main logic kahan daalega? \'ab sun {\' lagana zaroori hai!</span>\n'; return; }
             if (!hasKhatm) { output.innerHTML += '<span class="err-text">Error: Abe bhadwe programme toh khatam kar! Last mein \'Khatm, tata, goodbye\' likh!</span>\n'; return; }
 
-            // 2. Pre-Processing (Building Jumps just like Python Engine)
             let jumps = {};
             let stack = [];
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i].trim().toLowerCase();
-                if (line.includes("@@")) {
-                    line = line.split("@@")[0].trim();
-                }
+                if (line.includes("@@")) { line = line.split("@@")[0].trim(); }
                 
                 if (line.startsWith("} varna {")) {
                     if (stack.length > 0) {
@@ -454,9 +448,8 @@ Khatm, tata, goodbye</textarea>
                 }
             }
 
-            // 3. Execution Engine
             let variables = {};
-            let importedModules = {}; // Track imports
+            let importedModules = {};
             let insideMain = false;
             let i = 0;
             let executionLimit = 2000;
@@ -465,29 +458,22 @@ Khatm, tata, goodbye</textarea>
                 executionLimit--;
                 let line = lines[i].trim();
                 
-                // Ignore empty lines and comments
                 if (line === "" || line.startsWith("@@")) { i++; continue; }
 
                 let lineLower = line.toLowerCase();
 
-                // Import Module (Browser Support for Array)
                 if (lineLower.startsWith("bhadwe add kar")) {
                     let match = line.match(/bhadwe add kar\s+(\w+)\s+as\s+(\w+)/i);
-                    if (match) {
-                        importedModules[match[2].toLowerCase()] = match[1];
-                    }
+                    if (match) { importedModules[match[2].toLowerCase()] = match[1]; }
                     i++; continue;
                 }
 
-                // Start/Stop Triggers
                 if (lineLower === "namaste") { i++; continue; }
                 if (lineLower.startsWith("ab sun") && lineLower.includes("{")) { insideMain = true; i++; continue; }
-                if (lineLower === "khatm, tata, goodbye") break;
+                if (lineLower === "khatm, tata, goodbye" || lineLower === "khtam , tata goodbye") break;
 
-                // Execute Inside Main
                 if (insideMain) {
                     
-                    // ARRAY PUSH/POP LOGIC IN BROWSER
                     if (lineLower.startsWith("daal")) {
                         let match = line.match(/daal\s*\(\s*([a-zA-Z_]\w*)\s*,\s*(.+)\s*\)/i);
                         if (match && variables[match[1]] && Array.isArray(variables[match[1]])) {
@@ -503,9 +489,8 @@ Khatm, tata, goodbye</textarea>
                         i++; continue;
                     }
 
-                    // Loops (Jab Tak) Logic
-                    if (lineLower.startsWith("jab tak")) {
-                        let match = line.match(/jab tak\s*\((.*?)\)\s*\{/i);
+                    if (lineLower.startsWith("jab tak") || lineLower.startsWith("agar")) {
+                        let match = line.match(/(?:jab tak|agar)\s*\((.*?)\)\s*\{/i);
                         if (match) {
                             let expr = match[1];
                             let keys = Object.keys(variables).sort((a,b) => b.length - a.length);
@@ -520,44 +505,19 @@ Khatm, tata, goodbye</textarea>
                         }
                     }
 
-                    // If (Agar) Logic
-                    if (lineLower.startsWith("agar")) {
-                        let match = line.match(/agar\s*\((.*?)\)\s*\{/i);
-                        if (match) {
-                            let expr = match[1];
-                            let keys = Object.keys(variables).sort((a,b) => b.length - a.length);
-                            for (let key of keys) {
-                                let regex = new RegExp("\\b" + key + "\\b", "g");
-                                expr = expr.replace(regex, variables[key]);
-                            }
-                            try {
-                                if (eval(expr)) { i++; } else { i = jumps[i] + 1; }
-                            } catch(e) { i = jumps[i] + 1; }
-                            continue;
-                        }
-                    }
+                    if (lineLower.startsWith("} varna {")) { i = jumps[i] + 1; continue; }
 
-                    // Else (Varna) logic -> Skip it if we got here normally
-                    if (lineLower.startsWith("} varna {")) {
-                        i = jumps[i] + 1;
-                        continue;
-                    }
-
-                    // Brackets } logic -> For looping back or ending block
                     if (lineLower === "}" || lineLower === "};") {
                         let startIdx = jumps[i];
                         if (startIdx !== undefined) {
                             let startLineLower = lines[startIdx].trim().toLowerCase();
                             if (startLineLower.startsWith("jab tak")) {
-                                i = startIdx; // Jump back to loop condition
-                            } else {
-                                i++; // Normal block end
-                            }
+                                i = startIdx; 
+                            } else { i++; }
                         } else { i++; }
                         continue;
                     }
 
-                    // Variables (Declaration/Update): bkl count = count + 1
                     if (lineLower.startsWith("bkl ") || (lineLower.includes("=") && !lineLower.startsWith("chl ") && !lineLower.startsWith("mkc ") && !lineLower.startsWith("agar ") && !lineLower.startsWith("jab tak "))) {
                         let statement = lineLower.startsWith("bkl ") ? line.substring(4).trim() : line.trim();
                         
@@ -565,10 +525,8 @@ Khatm, tata, goodbye</textarea>
                             let splitIndex = statement.indexOf('=');
                             let varName = statement.substring(0, splitIndex).trim();
                             let varValueRaw = statement.substring(splitIndex + 1).trim();
-                            
                             let expr = varValueRaw;
 
-                            // -- TRANSFORM IMPORTED ARRAY SYNTAX pp.(1,2) -> [1,2] --
                             for(let alias in importedModules) {
                                 if(importedModules[alias].toLowerCase() === "array") {
                                     let regex = new RegExp("\\b" + alias + "\\.\\((.*?)\\)", "gi");
@@ -576,7 +534,6 @@ Khatm, tata, goodbye</textarea>
                                 }
                             }
 
-                            // -- BROWSER INPUT LOGIC --
                             let inputRegex = /bsdk input daal\s*\((.*?)\)/i;
                             let inputMatch = expr.match(inputRegex);
                             if (inputMatch) {
@@ -593,7 +550,6 @@ Khatm, tata, goodbye</textarea>
                             }
 
                             try {
-                                // Support array index assignment like arr[0] = 5
                                 if (varName.includes("[") && varName.endsWith("]")) {
                                     eval(`variables["${varName.split('[')[0]}"][${varName.split('[')[1].replace(']','')}] = ${expr}`);
                                 } else {
@@ -607,13 +563,11 @@ Khatm, tata, goodbye</textarea>
                         }
                     }
 
-                    // Print (chl ab print kar)
                     if (lineLower.startsWith("chl ab print kar") || lineLower.startsWith("mkc ab print kar")) {
                         let match = line.match(/\((.*)\)/);
                         if (match) {
                             let content = match[1]; 
                             let args = content.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                            
                             let finalOutputParts = [];
 
                             args.forEach(arg => {
@@ -629,7 +583,6 @@ Khatm, tata, goodbye</textarea>
                                     }
                                     try {
                                         let res = eval(expr);
-                                        // Format array nicely for printing
                                         if (Array.isArray(res)) res = "[" + res.join(", ") + "]";
                                         finalOutputParts.push(res);
                                     } catch(e) {
@@ -644,7 +597,6 @@ Khatm, tata, goodbye</textarea>
                         continue;
                     }
                     
-                    // Unhandled line warning
                     if(lineLower.startsWith("sabar kar") || lineLower.startsWith("abe saale")) {
                         output.innerHTML += `<span style="color:#fbbf24">> Note: '${line.split('(')[0]}' is an advanced feature. Best tested in local Python environment!</span>\n`;
                     }
