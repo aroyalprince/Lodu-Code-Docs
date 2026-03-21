@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lodu Code Intro Animation</title>
+    <!-- Importing cool hacker fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #050505;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Share Tech Mono', monospace;
+            /* Cyberpunk Grid Background */
+            background-image: 
+                linear-gradient(rgba(244, 63, 94, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(244, 63, 94, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            perspective: 1000px;
+        }
+
+        /* --- Terminal Typing Section --- */
+        .terminal-container {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 600px;
+            font-size: 1.5rem;
+            color: #4ade80; /* Hacker Green */
+            text-shadow: 0 0 5px rgba(74, 222, 128, 0.5);
+            z-index: 10;
+        }
+
+        .typing-text {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid #f43f5e;
+            animation: blink 0.75s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* --- Main Logo Section (Hidden Initially) --- */
+        .logo-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            text-align: center;
+            opacity: 0;
+            z-index: 20;
+        }
+
+        /* The BIG "LODU CODE" Text */
+        .glitch-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 6rem;
+            font-weight: 900;
+            color: #fff;
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 0 0 20px rgba(244, 63, 94, 0.8);
+            letter-spacing: 5px;
+        }
+
+        /* Glitch pseudo-elements */
+        .glitch-title::before,
+        .glitch-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+        }
+
+        .glitch-title::before {
+            left: 4px;
+            text-shadow: -2px 0 #0ff; /* Cyan glitch */
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+
+        .glitch-title::after {
+            left: -4px;
+            text-shadow: -2px 0 #f0f; /* Magenta glitch */
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+
+        .subtitle {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            color: #94a3b8;
+            letter-spacing: 2px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .creator {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #f43f5e;
+            opacity: 0;
+        }
+
+        /* --- Animations Classes --- */
+        .show-logo {
+            animation: explode 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.5s;
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 1s;
+        }
+
+        /* --- Keyframes for Effects --- */
+        @keyframes explode {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); filter: brightness(2); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: brightness(1); }
+        }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Glitch Math Magic */
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); }
+            20% { clip-path: inset(60% 0 10% 0); }
+            40% { clip-path: inset(40% 0 50% 0); }
+            60% { clip-path: inset(80% 0 5% 0); }
+            80% { clip-path: inset(10% 0 70% 0); }
+            100% { clip-path: inset(30% 0 20% 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); }
+            20% { clip-path: inset(30% 0 20% 0); }
+            40% { clip-path: inset(70% 0 10% 0); }
+            60% { clip-path: inset(20% 0 50% 0); }
+            80% { clip-path: inset(80% 0 5% 0); }
+            100% { clip-path: inset(5% 0 80% 0); }
+        }
+
+        /* Screen Shake effect for the Beat Drop */
+        .shake-screen {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 2px, 0); }
+            20%, 80% { transform: translate3d(4px, -2px, 0); }
+            30%, 50%, 70% { transform: translate3d(-8px, 4px, 0); }
+            40%, 60% { transform: translate3d(8px, -4px, 0); }
+        }
+
+        /* Play Button Overlay (To start the sequence) */
+        #start-btn {
+            position: absolute;
+            z-index: 100;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: #f43f5e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: 'Share Tech Mono', monospace;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(244, 63, 94, 0.5);
+            transition: 0.3s;
+        }
+        #start-btn:hover {
+            background: #e11d48;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Start Button (Browsers block auto-playing audio/heavy animations sometimes, so a click is safe) -->
+    <button id="start-btn" onclick="startAnimation()">START INTRO</button>
+
+    <!-- Terminal Phase -->
+    <div class="terminal-container" id="terminal">
+        <span class="typing-text" id="typewriter"></span>
+    </div>
+
+    <!-- Main Title Phase -->
+    <div class="logo-container" id="logo-block">
+        <div class="glitch-title" data-text="LODU CODE">LODU CODE</div>
+        <div class="subtitle" id="sub">THE DESI PROGRAMMING LANGUAGE</div>
+        <div class="creator" id="author">INVENTED BY PRINCE KUMAR PANDIT</div>
+    </div>
+
+    <script>
+        // The script we want to type out hacker-style
+        const lines = [
+            "Initializing System...",
+            "Loading Desi Globals...",
+            "Checking Sanskar Protocol...",
+            "Error: Sanskar Missing.",
+            "Abe lawde, Namaste bol!"
+        ];
+
+        let currentLine = 0;
+        let currentChar = 0;
+        const typewriterEl = document.getElementById('typewriter');
+        const terminalEl = document.getElementById('terminal');
+        const logoBlock = document.getElementById('logo-block');
+        const startBtn = document.getElementById('start-btn');
+
+        // Typewriter Effect Logic
+        function typeText() {
+            if (currentLine < lines.length) {
+                if (currentChar < lines[currentLine].length) {
+                    // Type character
+                    typewriterEl.innerHTML += lines[currentLine].charAt(currentChar);
+                    currentChar++;
+                    
+                    // Randomize typing speed a bit for realism
+                    let typingSpeed = Math.random() * 50 + 30; 
+                    
+                    // Make the last aggressive line type a bit slower for impact
+                    if (currentLine === lines.length - 1) {
+                        typingSpeed = 80;
+                    }
+
+                    setTimeout(typeText, typingSpeed);
+                } else {
+                    // Line finished, move to next line
+                    setTimeout(() => {
+                        typewriterEl.innerHTML = ""; // Clear for next line (or you can use <br>)
+                        currentLine++;
+                        currentChar = 0;
+                        typeText();
+                    }, 600); // Pause between lines
+                }
+            } else {
+                // Typing is fully done! Trigger the BEAT DROP
+                triggerBeatDrop();
+            }
+        }
+
+        // The Explosion / Beat Drop Magic
+        function triggerBeatDrop() {
+            // Hide terminal instantly
+            terminalEl.style.display = 'none';
+
+            // Shake the whole screen!
+            document.body.classList.add('shake-screen');
+
+            // Show the BIG GLITCH LOGO
+            logoBlock.classList.add('show-logo');
+            
+            // Show subtitles with delay
+            document.getElementById('sub').classList.add('fade-in-up');
+            document.getElementById('author').classList.add('fade-in');
+
+            // Remove shake class after it's done so it doesn't loop weirdly
+            setTimeout(() => {
+                document.body.classList.remove('shake-screen');
+            }, 500);
+        }
+
+        // Start everything when button is clicked
+        function startAnimation() {
+            startBtn.style.display = 'none'; // Hide button
+            typeText(); // Start hacking!
+        }
+    </script>
+</body>
+</html>
